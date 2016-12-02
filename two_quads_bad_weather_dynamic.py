@@ -68,7 +68,7 @@ time.sleep(1)
 vehicle.airspeed = 20
 vehicle1.airspeed=20
 
-while vehicle.location.global_relative_frame.alt < 9:
+while vehicle1.location.global_relative_frame.alt < 9:
 	print "Vehicle attaining altitude"
 
 time.sleep(1)
@@ -161,12 +161,106 @@ if flag:
 flag=0
 time.sleep(1)
 vehicle.mode=VehicleMode('LAND')
-vehicle1.mode=VehicleMode('LAND')
 print "LANDING"
 time.sleep(1)
 while vehicle.location.global_relative_frame.alt > 0.1:
 	print "Altitude %s" %vehicle.location.global_relative_frame.alt
 
 vehicle.close()
+
+c_location = LocationGlobalRelative(-35.362900,149.1654,30)
+d_location = LocationGlobalRelative(-35.363320,149.165500,30)
+
+a_location = LocationGlobalRelative(-35.362599,149.165541,30)
+vehicle1.simple_goto(a_location)
+
+while vehicle1.location.global_relative_frame.alt <29 and not flag:
+	print "Box"
+	print "%s c" %c_location
+	print "%s d" %d_location
+	print "%s v" %vehicle1.location.global_relative_frame
+	if vehicle1.location.global_relative_frame.lat <= (c_location.lat+0.00001) and vehicle1.location.global_relative_frame.lat >= (d_location.lat-0.00001):
+		if vehicle1.location.global_relative_frame.lon >= (c_location.lon-0.00001) and vehicle1.location.global_relative_frame.lon <= (d_location.lon+0.00001):
+			print "Approaching Bad weather, diverting flight"
+			time.sleep(1)
+			if vehicle1.location.global_relative_frame.lon <= c_location.lat + 0.00004:
+				b_location= LocationGlobalRelative(a_location.lat,a_location.lon,a_location.alt)
+				a_location.lon = c_location.lon - 0.0001
+				a_location.lat = vehicle1.location.global_relative_frame.lat
+
+			else:
+				b_location= LocationGlobalRelative(a_location.lat,a_location.lon,a_location.alt)
+				a_location.lon = d_location.lon + 0.0001
+				a_location.lat = vehicle1.location.global_relative_frame.lat
+ 			
+			vehicle.simple_goto(a_location)
+			flag=1
+	
+	c_location.lat = c_location.lat + 0.00001
+#	c_location.lon = c_location.lon + 0.00001
+	d_location.lat = d_location.lat + 0.00001
+#	d_location.lon = d_location.lon + 0.00001
+ 	time.sleep(1)
+
+if flag:
+	while vehicle1.location.global_relative_frame.alt < (a_location.alt-4):
+		print "Diverting"
+
+	a_location=LocationGlobalRelative(b_location.lat,b_location.lon,b_location.alt)
+	vehicle1.simple_goto(a_location)
+	while vehicle1.location.global_relative_frame.alt < (a_location.alt-1):
+		print "Going to actual destination"
+
+flag=0
+time.sleep(1)
+a_location = LocationGlobalRelative(-35.362484,149.165259,50)
+vehicle1.simple_goto(a_location)
+time.sleep(1)
+while vehicle1.location.global_relative_frame.alt <49:
+	print "Box"
+	print "%s c" %c_location
+	print "%s d" %d_location
+	print "%s v" %vehicle1.location.global_relative_frame
+	if vehicle1.location.global_relative_frame.lat <= (c_location.lat+0.00001) and vehicle1.location.global_relative_frame.lat >= (d_location.lat-0.00001):
+		if vehicle1.location.global_relative_frame.lon >= (c_location.lon-0.00001) and vehicle1.location.global_relative_frame.lon <= (d_location.lon+0.00001):
+			print "Approaching Bad weather, diverting flight"
+			time.sleep(1)
+			if vehicle1.location.global_relative_frame.lon <= c_location.lat + 0.00004:
+				b_location= LocationGlobalRelative(a_location.lat,a_location.lon,a_location.alt)
+				a_location.lon = c_location.lon - 0.0001
+				a_location.lat = vehicle1.location.global_relative_frame.lat
+
+			else:
+				b_location= LocationGlobalRelative(a_location.lat,a_location.lon,a_location.alt)
+				a_location.lon = d_location.lon + 0.0001
+				a_location.lat = vehicle1.location.global_relative_frame.lat
+ 			
+			vehicle.simple_goto(a_location)
+			flag=1
+	
+	c_location.lat = c_location.lat + 0.00001
+#	c_location.lon = c_location.lon + 0.00001
+	d_location.lat = d_location.lat + 0.00001
+#	d_location.lon = d_location.lon + 0.00001
+ 	time.sleep(1)
+
+if flag:
+	while vehicle1.location.global_relative_frame.alt < (a_location.alt-4):
+		print "Diverting"
+
+	a_location=LocationGlobalRelative(b_location.lat,b_location.lon,b_location.alt)
+	vehicle1.simple_goto(a_location)
+	while vehicle1.location.global_relative_frame.alt < (a_location.alt-1):
+		print "Going to actual destination"
+
+flag=0
+time.sleep(1)
+vehicle1.mode=VehicleMode('LAND')
+print "LANDING"
+time.sleep(1)
+while vehicle.location.global_relative_frame.alt > 0.1:
+	print "Altitude %s" %vehicle.location.global_relative_frame.alt
+
+
 vehicle1.close()
 print "Completed"
